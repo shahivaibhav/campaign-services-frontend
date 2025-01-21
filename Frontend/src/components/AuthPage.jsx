@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import UserDashboard from './UserDashboard';
+import SuperAdminDashboard from './SuperAdminDashboard';
+import AdminDashboard from './AdminDashboard';
+import PBN_Dashboard from './PBN_Dashboard';
+
 
 const AuthPage = () => {
-  const RegisterUserEnd = "http://127.0.0.1:8000/users/create_user/";
-  const LoginUserEnd = "http://127.0.0.1:8000/users/login/";
+  const RegisterUserEnd = "http://127.0.0.1:8000/users/api/register/";
+  const LoginUserEnd = "http://127.0.0.1:8000/users/api/login/";
 
   const [isSignUp, setIsSignUp] = useState(true);
   const [formdata, setFormData] = useState({
@@ -11,8 +17,10 @@ const AuthPage = () => {
     last_name: "",
     email: "",
     password: "",
-    role: "practice user",
+    roles: "practice user",
   });
+
+  const navigate = useNavigate();  // Initialize the navigate function
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +40,7 @@ const AuthPage = () => {
                 first_name: formdata.first_name,
                 last_name: formdata.last_name,
                 username: formdata.username,
-                role: formdata.role,
+                roles: formdata.roles,
               }
             : {
                 username: formdata.username,
@@ -43,11 +51,24 @@ const AuthPage = () => {
       if (response.ok) {
         const jsonResponse = await response.json();
         console.log("Success in authentication ", jsonResponse);
+
+        if (isSignUp) {
+          // If it's a sign-up, redirect to the sign-in page after successful registration
+          setIsSignUp(false);
+        } else {
+          // If it's a login, check the role and navigate accordingly
+          
+          
+          const role = jsonResponse.role;  // Assuming the role is in the response
+          
+          navigate('/dashboard', { state: {role} });
+
+        }
       } else {
-        console.error("Error :", response.statusText);
+        console.error("Error:", response.statusText);
       }
     } catch (error) {
-      console.log("Error :", error);
+      console.log("Error:", error);
     }
   };
 
@@ -142,10 +163,10 @@ const AuthPage = () => {
 
             {isSignUp && (
               <div>
-                <label className="block text-sm font-medium text-gray-300">Role</label>
+                <label className="block text-sm font-medium text-gray-300">Roles</label>
                 <select
-                  name="role"
-                  value={formdata.role}
+                  name="roles"
+                  value={formdata.roles}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
                   required

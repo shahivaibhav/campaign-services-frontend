@@ -4,12 +4,16 @@ import AdminDashboard from './AdminDashboard'
 import UserDashboard from './UserDashboard'
 import { FaSignOutAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 
 
 const PBN_Dashboard = () => {
 
-    const[userRole, setUserRole] = useState('super_admin')
-    const[userEmail] = useState('shahivaibhav1605@gmail.com')
+  const location = useLocation()
+  const { role } = location.state;
+  const userRole = role
+  const userEmail = useState('shahivaibhav1605@gmail.com')
+
 
     /* Array of many campaign i have to take from backend*/
     const campaigns = [
@@ -50,7 +54,7 @@ const PBN_Dashboard = () => {
                   </h1>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <span className="text-gray-400">Welcome, {userRole.replace('_', ' ')}</span>
+                  <span className="text-gray-400">Welcome {name}, {userRole.replace('_', ' ')}</span>
                   <motion.button
                     className="text-gray-400 hover:text-gray-100 flex items-center space-x-2"
                     whileHover={{ scale: 1.1 }}
