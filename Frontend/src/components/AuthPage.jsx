@@ -5,10 +5,10 @@ import SuperAdminDashboard from './SuperAdminDashboard';
 import AdminDashboard from './AdminDashboard';
 import PBN_Dashboard from './PBN_Dashboard';
 
-
 const AuthPage = () => {
   const RegisterUserEnd = "http://127.0.0.1:8000/users/api/register/";
   const LoginUserEnd = "http://127.0.0.1:8000/users/api/login/";
+
 
   const [isSignUp, setIsSignUp] = useState(true);
   const [formdata, setFormData] = useState({
@@ -57,12 +57,8 @@ const AuthPage = () => {
           setIsSignUp(false);
         } else {
           // If it's a login, check the role and navigate accordingly
-          
-          
           const role = jsonResponse.role;  // Assuming the role is in the response
-          
           navigate('/dashboard', { state: {role} });
-
         }
       } else {
         console.error("Error:", response.statusText);
@@ -211,7 +207,7 @@ const AuthPage = () => {
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-2 bg-gray-900 text-gray-400">
-                {isSignUp ? "Already have an account?" : "New to Lightbulb?"}
+                {isSignUp ? "Already have an account?" : "New to Practice by Numbers?"}
               </span>
             </div>
           </div>
@@ -224,6 +220,18 @@ const AuthPage = () => {
               {isSignUp ? "Sign in to your account" : "Create a new account"}
             </button>
           </div>
+          
+          {/* Forgot Password Link */}
+          {!isSignUp && (
+            <div className="mt-4 text-center">
+              <a
+                href="/auth/rest-password"
+                className="text-sm font-medium text-blue-600 hover:text-blue-500 transition duration-150"
+              >
+                Forgot your password?
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </div>

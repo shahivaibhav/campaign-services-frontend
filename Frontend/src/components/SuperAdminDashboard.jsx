@@ -1,4 +1,5 @@
-import { React } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const SuperAdminDashboard = ({ campaigns }) => {
     return (
@@ -16,12 +17,12 @@ const SuperAdminDashboard = ({ campaigns }) => {
                         <div key={campaign.id} className="border border-gray-700 rounded p-4">
                             <div className="flex justify-between items-center">
                                 <div>
-                                    <h4 className="font-medium text-gray-300">{campaign.name}</h4>
+                                    <h4 className="font-medium text-gray-300">{campaign.type}</h4>
                                     <p className="text-gray-400">{campaign.description}</p>
                                 </div>
                                 <span
                                     className={`px-3 py-1 rounded-full text-sm ${
-                                        campaign.status === 'Pending'
+                                        campaign.status === 'pending'
                                             ? 'bg-red-600 text-red-100'
                                             : 'bg-green-600 text-green-100'
                                     }`}
@@ -35,6 +36,18 @@ const SuperAdminDashboard = ({ campaigns }) => {
             </div>
         </div>
     );
+};
+
+// PropTypes validation
+SuperAdminDashboard.propTypes = {
+    campaigns: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+            type: PropTypes.string.isRequired,
+            description: PropTypes.string.isRequired,
+            status: PropTypes.oneOf(['pending', 'completed']).isRequired,
+        })
+    ).isRequired,
 };
 
 export default SuperAdminDashboard;

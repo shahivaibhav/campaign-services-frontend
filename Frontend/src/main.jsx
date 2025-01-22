@@ -10,12 +10,15 @@ import {
 } from "react-router-dom";
 import AuthPage from "./components/AuthPage.jsx";
 import PBN_Dashboard from "./components/PBN_Dashboard.jsx";
+import ResetPassword from "./components/Rest_Password.jsx";
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<App />} />
       <Route path="/auth" element={<AuthPage />} />
+      <Route path='/auth/rest-password' element={<ResetPassword />}/>
       <Route path="/dashboard" element={<PBN_Dashboard />} />
     </>
   )
