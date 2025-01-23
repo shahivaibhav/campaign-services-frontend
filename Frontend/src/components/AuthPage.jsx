@@ -6,9 +6,8 @@ import AdminDashboard from './AdminDashboard';
 import PBN_Dashboard from './PBN_Dashboard';
 
 const AuthPage = () => {
-  const RegisterUserEnd = "http://127.0.0.1:8000/users/api/register/";
-  const LoginUserEnd = "http://127.0.0.1:8000/users/api/login/";
-  const apiUrl = "https://b5cdee0d-fa1f-4430-ac01-281d90548291-dev.e1-us-east-azure.choreoapis.dev/lastest/back/v1"
+  const RegisterUserEnd = "https://b5cdee0d-fa1f-4430-ac01-281d90548291-dev.e1-us-east-azure.choreoapis.dev/lastest/back/v1/users/api/register/";
+  const LoginUserEnd = "https://b5cdee0d-fa1f-4430-ac01-281d90548291-dev.e1-us-east-azure.choreoapis.dev/lastest/back/v1/users/api/login/";
 
 
   const [isSignUp, setIsSignUp] = useState(true);
@@ -28,7 +27,7 @@ const AuthPage = () => {
     const endPoint = isSignUp ? RegisterUserEnd : LoginUserEnd;
 
     try {
-      const response = await fetch(apiUrl , {
+      const response = await fetch(endPoint , {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
