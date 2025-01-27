@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import Cookies from "js-cookie";
+import { toast ,ToastContainer} from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for Toastify
 const UserCampaigns = () => {
     const [formData, setFormData] = useState({
         type: "",
@@ -14,19 +16,26 @@ const UserCampaigns = () => {
     const superAdminUrl = "http://127.0.0.1:8000/user-campaigns/api/campaign-superadmin/";
     const adminUrl = "http://127.0.0.1:8000/user-campaigns/api/campaign-admin/";
 
-    const role = localStorage.getItem("role");
+    const role = "super_admin"
 
     const submitHandler = async (e) => {
         e.preventDefault();
         const url = role === "admin" ? adminUrl : superAdminUrl;
 
         try {
+            const token = Cookies.get("access_token");
+            if (!token) {
+                console.error("Access token not found");
+                toast.error("Access token not found");
+                return;
+            }
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type' : 'application/json',
+                    Authorization: `Bearer ${token}`
                 },
-                credentials: "include",
+                
                 body: JSON.stringify({
                     type: formData.type,
                     text: formData.text,
@@ -51,6 +60,8 @@ const UserCampaigns = () => {
             [e.target.name]: e.target.value
         });
     };
+
+    
 
     return (
         <div className="min-h-screen bg-gray-800 text-white flex items-center justify-center">
@@ -97,7 +108,7 @@ const UserCampaigns = () => {
                         className="w-full px-3 py-2 bg-gray-800 text-white border border-gray-600 rounded focus:outline-none focus:ring focus:ring-blue-500"
                     >
                         <option value="pending">Pending</option>
-                        <option value="completed">Completed</option>
+                        <option value="active">Active</option>
                     </select>
                 </div>
                 <button

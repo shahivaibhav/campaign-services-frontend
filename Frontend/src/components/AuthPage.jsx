@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UserDashboard from './UserDashboard';
-import SuperAdminDashboard from './SuperAdminDashboard';
-import AdminDashboard from './AdminDashboard';
-import PBN_Dashboard from './PBN_Dashboard';
 import { useDispatch } from 'react-redux'
 import { loginSuccess } from '../redux/userSlice'
+import Cookies from "js-cookie";
+
 
 const AuthPage = () => {
   const RegisterUserEnd = "http://127.0.0.1:8000/users/register/";
@@ -35,7 +33,7 @@ const AuthPage = () => {
         headers: {
           "Content-Type": "application/json"
         },
-        credentials: "include",
+        
         body: JSON.stringify({
           password: formdata.password,
           ...(isSignUp
@@ -60,9 +58,9 @@ const AuthPage = () => {
           // If it's a sign-up, redirect to the sign-in page after successful registration
           setIsSignUp(false);
         } else {
-          // Store the role in localStorage after login
-          localStorage.setItem("role", jsonResponse.role);
-
+          
+          Cookies.set("access_token", jsonResponse.access, { expires: 1 });
+          Cookies.set("refresh_token", jsonResponse.refresh, { expires: 7 });
           dispatch(
             loginSuccess({
               role: jsonResponse.role,

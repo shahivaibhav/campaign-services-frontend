@@ -5,28 +5,37 @@ import AdminDashboard from "./AdminDashboard";
 import UserDashboard from "./UserDashboard";
 import { FaSignOutAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useLocation } from "react-router-dom";
+
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
-import { loginSuccess } from "../redux/userSlice";
+
+import Cookies from "js-cookie";
 
 const PBN_Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [role, setRole] = useState(null)
+
+  const role = useSelector((state) => state.user.role);
 
   const [campaigns, setCampaigns] = useState([]);
 
   useEffect(() => {
     const fetchCampaigns = async () => {
+      const token = Cookies.get("access_token");
+      if (!token) {
+        console.error("Access token not found");
+        return;
+      }
       try {
-        const response = await fetch("http://127.0.0.1:8000/user-campaigns/api/campaign-superadmin/", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
+        const response = await fetch(
+          "http://127.0.0.1:8000/user-campaigns/api/campaign-superadmin/",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
@@ -34,34 +43,22 @@ const PBN_Dashboard = () => {
 
         const data = await response.json();
         setCampaigns(data);
-
       } catch (err) {
-        
-        console.error(err)
-        
+        console.error(err);
       }
     };
 
     fetchCampaigns();
-  }, []); // Empty dependency array ensures the effect runs once when the component mounts.
+  }, []); // Runs once on mount
 
-
+  const handleDeleteCampaign = (campaignId) => {
+    setCampaigns((prev) => prev.filter((campaign) => campaign.id !== campaignId));
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("role");  // Clear role from localStorage
     dispatch(logout()); // Clear user state
     navigate("/"); // Redirect to home
   };
-
-  useEffect(() => {
-    // Retrieve role from localStorage on component mount
-    const storedRole = localStorage.getItem("role");
-    if (storedRole) {
-      setRole(storedRole);
-    } else {
-      navigate("/auth"); // Redirect to home page if no role is found
-    }
-  }, []);
 
   return (
     <div className="min-h-screen bg-gray-800 text-white">
@@ -72,12 +69,7 @@ const PBN_Dashboard = () => {
               Practice by Numbers
             </h1>
             <div className="flex items-center space-x-4">
-              {role ? (
-                <span className="text-gray-400">
-                   Welcome, {role.replace("_", " ")}
-                </span>
-              ) : null }
-              
+              {role && <span className="text-gray-400">Welcome, {role.replace("_", " ")}</span>}
               <motion.button
                 className="text-gray-400 hover:text-gray-100 flex items-center space-x-2"
                 whileHover={{ scale: 1.1 }}
@@ -94,12 +86,10 @@ const PBN_Dashboard = () => {
 
       <main className="max-w-7xl mx-auto py-6 px-4">
         {role === "super_admin" && (
-          <SuperAdminDashboard campaigns={campaigns} />
+          <SuperAdminDashboard campaigns={campaigns} onDelete={handleDeleteCampaign} />
         )}
         {role === "admin" && <AdminDashboard campaigns={campaigns} />}
-        {role === "practice_user" && (
-          <UserDashboard campaigns={campaigns} email={email} />
-        )}
+        {role === "practice_user" && <UserDashboard campaigns={campaigns} />}
       </main>
     </div>
   );

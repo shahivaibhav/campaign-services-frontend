@@ -14,6 +14,9 @@ import ResetPassword from "./components/Rest_Password.jsx";
 import store from './redux/store.js'
 import { Provider } from 'react-redux'
 import UserCampaigns from "./components/UserCampaigns.jsx";
+import UpdateCampaign from "./components/UpdateCampaign.jsx";
+
+
 
 
 const router = createBrowserRouter(
@@ -24,6 +27,7 @@ const router = createBrowserRouter(
       <Route path='/auth/rest-password' element={<ResetPassword />}/>
       <Route path="/dashboard" element={<PBN_Dashboard />} />
       <Route path="/dashboard/create-campaigns" element={<UserCampaigns />} />
+      <Route path="/dashboard/update-campaign/:campaignId" element={<UpdateCampaign />} />
     </>
   )
 );
