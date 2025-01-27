@@ -113,4 +113,4 @@ const UpdateCampaign = () => {
     );
 };
 
-export default UpdateCampaign;
+export default UpdateCampaign
