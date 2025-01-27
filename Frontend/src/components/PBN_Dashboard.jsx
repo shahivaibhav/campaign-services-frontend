@@ -1,69 +1,88 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import SuperAdminDashboard from './SuperAdminDashboard';
-import AdminDashboard from './AdminDashboard';
-import UserDashboard from './UserDashboard';
-import { FaSignOutAlt } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import SuperAdminDashboard from "./SuperAdminDashboard";
+import AdminDashboard from "./AdminDashboard";
+import UserDashboard from "./UserDashboard";
+import { FaSignOutAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
+import { loginSuccess } from "../redux/userSlice";
 
 const PBN_Dashboard = () => {
-  
-  const location = useLocation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { role } = location.state;
-  const userRole = role;
-  const userEmail = useState('shahivaibhav1605@gmail.com');
+  const [role, setRole] = useState(null)
 
-  const campaigns = [
-    {
-      id: 1,
-      name: 'Vaibhav Shahi',
-      description: 'Free dental check-up till 26 January',
-      status: 'Active',
-      targetUsers: ['xyz@example.com', 'xyz@example.com'],
-    },
-    {
-      id: 2,
-      type: 'Lakhan Shahi',
-      description: '50% off on all dental insurances',
-      status: 'Active',
-      targetUsers: ['xyz@example.com', 'xyz@example.com'],
-    },
-    {
-      id: 3,
-      name: 'Sanskriti Bhalla',
-      description: 'Register to enroll in free webinar',
-      status: 'Pending',
-      targetUsers: ['xyz@example.com', 'xyz@example.com'],
-    },
-  ];
+  const [campaigns, setCampaigns] = useState([]);
 
-  // Handle Logout
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/user-campaigns/api/campaign-superadmin/", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setCampaigns(data);
+
+      } catch (err) {
+        
+        console.error(err)
+        
+      }
+    };
+
+    fetchCampaigns();
+  }, []); // Empty dependency array ensures the effect runs once when the component mounts.
+
+
+
   const handleLogout = () => {
-    // Perform any cleanup or logout logic here (e.g., clearing local storage, etc.)
-    console.log('Logging out...');
-    navigate('/'); // Redirect to home page
+    localStorage.removeItem("role");  // Clear role from localStorage
+    dispatch(logout()); // Clear user state
+    navigate("/"); // Redirect to home
   };
+
+  useEffect(() => {
+    // Retrieve role from localStorage on component mount
+    const storedRole = localStorage.getItem("role");
+    if (storedRole) {
+      setRole(storedRole);
+    } else {
+      navigate("/auth"); // Redirect to home page if no role is found
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-800 text-white">
-      {/* Navigation */}
       <nav className="bg-gray-900 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between h-16 items-center">
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-blue-500 animate__animated animate__fadeIn">
-                Practice by Numbers
-              </h1>
-            </div>
+            <h1 className="text-2xl font-bold text-blue-500">
+              Practice by Numbers
+            </h1>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-400">Welcome, {userRole.replace('_', ' ')}</span>
+              {role ? (
+                <span className="text-gray-400">
+                   Welcome, {role.replace("_", " ")}
+                </span>
+              ) : null }
+              
               <motion.button
                 className="text-gray-400 hover:text-gray-100 flex items-center space-x-2"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleLogout} // Attach the logout handler here
+                onClick={handleLogout}
               >
                 <FaSignOutAlt />
                 <span>Logout</span>
@@ -73,36 +92,13 @@ const PBN_Dashboard = () => {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 px-4">
-        {userRole === 'super_admin' && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <SuperAdminDashboard campaigns={campaigns} />
-          </motion.div>
+        {role === "super_admin" && (
+          <SuperAdminDashboard campaigns={campaigns} />
         )}
-
-        {userRole === 'admin' && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <AdminDashboard campaigns={campaigns} />
-          </motion.div>
-        )}
-
-        {userRole === 'practice_user' && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <UserDashboard campaigns={campaigns} userEmail={userEmail} />
-          </motion.div>
+        {role === "admin" && <AdminDashboard campaigns={campaigns} />}
+        {role === "practice_user" && (
+          <UserDashboard campaigns={campaigns} email={email} />
         )}
       </main>
     </div>

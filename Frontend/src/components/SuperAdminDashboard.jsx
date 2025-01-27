@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const SuperAdminDashboard = ({ campaigns }) => {
+    const navigate = useNavigate()
+
+    const createCampaignHandler = () => {
+        navigate('/dashboard/create-campaigns')
+    }
     return (
         <div className="min-h-screen bg-gray-800 text-white">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-200">Campaign Management</h2>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-600">
+                <button onClick={createCampaignHandler} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-600">
                     Create New Campaign
                 </button>
             </div>
@@ -45,7 +51,7 @@ SuperAdminDashboard.propTypes = {
             id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
             type: PropTypes.string.isRequired,
             description: PropTypes.string.isRequired,
-            status: PropTypes.oneOf(['pending', 'completed']).isRequired,
+            status: PropTypes.oneOf(['pending', 'active']).isRequired,
         })
     ).isRequired,
 };

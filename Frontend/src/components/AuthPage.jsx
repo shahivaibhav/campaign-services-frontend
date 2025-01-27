@@ -4,10 +4,12 @@ import UserDashboard from './UserDashboard';
 import SuperAdminDashboard from './SuperAdminDashboard';
 import AdminDashboard from './AdminDashboard';
 import PBN_Dashboard from './PBN_Dashboard';
+import { useDispatch } from 'react-redux'
+import { loginSuccess } from '../redux/userSlice'
 
 const AuthPage = () => {
-  const RegisterUserEnd = "https://b5cdee0d-fa1f-4430-ac01-281d90548291-dev.e1-us-east-azure.choreoapis.dev/lastest/back/v1/users/api/register/";
-  const LoginUserEnd = "https://b5cdee0d-fa1f-4430-ac01-281d90548291-dev.e1-us-east-azure.choreoapis.dev/lastest/back/v1/users/api/login/";
+  const RegisterUserEnd = "http://127.0.0.1:8000/users/register/";
+  const LoginUserEnd = "http://127.0.0.1:8000/users/login/";
 
 
   const [isSignUp, setIsSignUp] = useState(true);
@@ -21,6 +23,7 @@ const AuthPage = () => {
   });
 
   const navigate = useNavigate();  // Initialize the navigate function
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,8 +33,9 @@ const AuthPage = () => {
       const response = await fetch(endPoint , {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({
           password: formdata.password,
           ...(isSignUp
@@ -56,9 +60,16 @@ const AuthPage = () => {
           // If it's a sign-up, redirect to the sign-in page after successful registration
           setIsSignUp(false);
         } else {
-          // If it's a login, check the role and navigate accordingly
-          const role = jsonResponse.role;  // Assuming the role is in the response
-          navigate('/dashboard', { state: {role} });
+          // Store the role in localStorage after login
+          localStorage.setItem("role", jsonResponse.role);
+
+          dispatch(
+            loginSuccess({
+              role: jsonResponse.role,
+              email: jsonResponse.email,
+            })
+          );
+          navigate('/dashboard')
         }
       } else {
         console.error("Error:", response.statusText);
@@ -98,8 +109,9 @@ const AuthPage = () => {
                     name="first_name"
                     value={formdata.first_name}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
+                    className="mt-1 block w-full px-3 py-2 text-white bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
                     required
+                    
                   />
                 </div>
                 <div>
@@ -109,7 +121,7 @@ const AuthPage = () => {
                     name="last_name"
                     value={formdata.last_name}
                     onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
+                    className="mt-1 block w-full px-3 py-2 text-white bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
                     required
                   />
                 </div>
@@ -125,7 +137,7 @@ const AuthPage = () => {
                   name="username"
                   value={formdata.username}
                   onChange={handleChange}
-                  className="block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
+                  className="block w-full px-3 py-2 text-white bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
                   required
                 />
               </div>
@@ -139,7 +151,7 @@ const AuthPage = () => {
                   name="email"
                   value={formdata.email}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
+                  className="mt-1 block w-full px-3 py-2 text-white bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
                   required
                 />
               </div>
@@ -152,7 +164,7 @@ const AuthPage = () => {
                 name="password"
                 value={formdata.password}
                 onChange={handleChange}
-                className="block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
+                className="block w-full px-3 py-2 text-white bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
                 required
               />
             </div>
@@ -164,7 +176,7 @@ const AuthPage = () => {
                   name="roles"
                   value={formdata.roles}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
+                  className="mt-1 block w-full px-3 py-2 text-white bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
                   required
                 >
                   <option value="practice_user">Practice User</option>
