@@ -17,6 +17,8 @@ const PBN_Dashboard = () => {
 
   const role = useSelector((state) => state.user.role);
 
+  const userUrl = (role === "super_admin") ? "http://127.0.0.1:8000/user-campaigns/api/campaign-superadmin/" : "http://127.0.0.1:8000/user-campaigns/api/campaign-admin/";
+
   const [campaigns, setCampaigns] = useState([]);
 
   useEffect(() => {
@@ -28,7 +30,7 @@ const PBN_Dashboard = () => {
       }
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/user-campaigns/api/campaign-superadmin/",
+          userUrl,
           {
             method: "GET",
             headers: {

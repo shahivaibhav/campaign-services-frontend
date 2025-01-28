@@ -45,6 +45,10 @@ const UpdateCampaign = () => {
 
         if (response.ok) {
             toast.success('Campaign updated successfully!');
+            console.log(response)
+            const data = await response.json();
+            console.log(data)
+
             navigate('/dashboard');
         } else {
             toast.error('Failed to update campaign.');
