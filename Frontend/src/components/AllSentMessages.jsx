@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useSelector } from "react-redux";
 
 const AllMessages = () => {
   const [campaigns, setCampaigns] = useState([]);
-  const role = useSelector((state) => state.user.role);
 
   useEffect(() => {
     const fetchSentCampaigns = async () => {
@@ -44,17 +42,24 @@ const AllMessages = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
-      <h2 className="text-2xl font-bold mb-6">
-        {role === "admin" ? "All Sent Campaigns" : "Received Messages"}
-      </h2>
+      <h2 className="text-2xl font-bold mb-6">All Sent Campaigns</h2>
       {campaigns.length === 0 ? (
-        <p>No {role === "admin" ? "sent campaigns" : "received messages"} available.</p>
+        <p>No sent campaigns available.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {campaigns.map((campaign, index) => (
             <div key={index} className="bg-gray-800 p-4 rounded shadow-md">
               <h3 className="text-xl font-semibold mb-2">{campaign.text}</h3>
               <p className="text-gray-400">{campaign.description}</p>
+              <span
+                className={`px-3 py-1 mt-2 inline-block rounded-full text-sm ${
+                  campaign.sent_via === "email"
+                    ? "bg-blue-600 text-blue-100"
+                    : "bg-green-600 text-green-100"
+                }`}
+              >
+                Sent via {campaign.sent_via}
+              </span>
             </div>
           ))}
         </div>

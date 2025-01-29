@@ -17,7 +17,8 @@ import UserCampaigns from "./components/UserCampaigns.jsx";
 import UpdateCampaign from "./components/UpdateCampaign.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { PersistGate } from "redux-persist/lib/integration/react.js";
-import AllMessages from "./components/AllMessages.jsx";
+import AllMessages from "./components/AllSentMessages.jsx";
+import ReceivedMessages from "./components/PracticeUser.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -50,6 +51,7 @@ const router = createBrowserRouter(
         }
       />
       <Route path="/all-messages" element={<AllMessages />} />
+      <Route path="/received-messages" element={<ProtectedRoute><ReceivedMessages /></ProtectedRoute>} />
     </>
   )
 );

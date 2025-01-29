@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SuperAdminDashboard from "./SuperAdminDashboard";
 import AdminDashboard from "./AdminDashboard";
-import UserDashboard from "./UserDashboard";
+import UserDashboard from "./PracticeUser";
 import { FaSignOutAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 
@@ -10,7 +10,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
 
 import Cookies from "js-cookie";
-import AllMessages from "./AllMessages";
+import AllReceivedMessages from "./PracticeUser";
+
 
 const PBN_Dashboard = () => {
   const dispatch = useDispatch();
@@ -29,11 +30,11 @@ const PBN_Dashboard = () => {
       window.removeEventListener('popstate', disableBackButton)
     }
   }, [navigate])
-
-
+  
+  const [campaigns, setCampaigns] = useState([]);
+  if(role != "practice user"){
   const userUrl = (role === "super_admin") ? "http://127.0.0.1:8000/user-campaigns/api/campaign-superadmin/" : "http://127.0.0.1:8000/user-campaigns/api/campaign-admin/";
 
-  const [campaigns, setCampaigns] = useState([]);
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -66,6 +67,7 @@ const PBN_Dashboard = () => {
 
     fetchCampaigns();
   }, []); // Runs once on mount
+}
 
   const handleDeleteCampaign = (campaignId) => {
     setCampaigns((prev) => prev.filter((campaign) => campaign.id !== campaignId));
@@ -74,10 +76,11 @@ const PBN_Dashboard = () => {
   const handleLogout = () => {
     Cookies.remove("access_token");
     Cookies.remove("refresh_token");
-    
+
     dispatch(logout());
     navigate("/"); 
   };
+
 
   return (
     <div className="min-h-screen bg-gray-800 text-white">
@@ -108,7 +111,7 @@ const PBN_Dashboard = () => {
           <SuperAdminDashboard campaigns={campaigns} onDelete={handleDeleteCampaign} />
         )}
         {role === "admin" && <AdminDashboard campaigns={campaigns} />}
-        {role === "practice user" && <AllMessages />}
+        {role === "practice user" && <AllReceivedMessages />}
       </main>
     </div>
   );

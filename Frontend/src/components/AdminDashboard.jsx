@@ -39,13 +39,6 @@ const AdminDashboard = ({ campaigns }) => {
     }
   };
 
-  const handleSendClick = (campaignId) => {
-    const choice = window.confirm(
-      "Do you want to send this campaign via Email? Click Cancel to send as a Message."
-    );
-    submitHandler(campaignId, choice);
-  };
-
   const onSubmitHistory = () => {
     navigate("/all-messages");
   };
@@ -85,12 +78,20 @@ const AdminDashboard = ({ campaigns }) => {
                     {campaign.status}
                   </span>
                   {campaign.status === "pending" && (
-                    <button
-                      onClick={() => handleSendClick(campaign.id)}
-                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    >
-                      Send Campaign
-                    </button>
+                    <>
+                      <button
+                        onClick={() => submitHandler(campaign.id, true)}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                      >
+                        Send via Email
+                      </button>
+                      <button
+                        onClick={() => submitHandler(campaign.id, false)}
+                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                      >
+                        Send via Message
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
