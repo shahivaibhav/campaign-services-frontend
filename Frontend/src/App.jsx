@@ -1,7 +1,18 @@
-import { React } from 'react'
-import { NavLink } from "react-router-dom";
+import { React, useEffect } from 'react'
+import { NavLink, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const App = () => {
+  
+  const navigate = useNavigate()
+  useEffect(() => {
+    const token = Cookies.get("access_token")
+
+    if(token && window.location.pathname === '/'){
+      navigate('/dashboard')
+    }
+    
+  }, [navigate])
   const features = [
     {
       title: "Campaign Planning",

@@ -1,7 +1,7 @@
 import { React } from 'react';
 import PropTypes from 'prop-types';
 
-const UserDashboard = ({ campaigns, userEmail }) => {
+const UserDashboard = () => {
     return (
         <div className="min-h-screen bg-gray-800 text-white">
             <h2 className="text-2xl font-bold text-gray-200 mb-6">Your Campaigns</h2>

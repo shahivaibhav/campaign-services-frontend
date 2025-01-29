@@ -10,12 +10,26 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
 
 import Cookies from "js-cookie";
+import AllMessages from "./AllMessages";
 
 const PBN_Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const role = useSelector((state) => state.user.role);
+
+  useEffect(() => {
+    const disableBackButton = (event) => {
+      event.preventDefault()
+      navigate('/dashboard');
+    };
+
+    window.addEventListener('popstate', disableBackButton);
+    return () => {
+      window.removeEventListener('popstate', disableBackButton)
+    }
+  }, [navigate])
+
 
   const userUrl = (role === "super_admin") ? "http://127.0.0.1:8000/user-campaigns/api/campaign-superadmin/" : "http://127.0.0.1:8000/user-campaigns/api/campaign-admin/";
 
@@ -58,8 +72,11 @@ const PBN_Dashboard = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logout()); // Clear user state
-    navigate("/"); // Redirect to home
+    Cookies.remove("access_token");
+    Cookies.remove("refresh_token");
+    
+    dispatch(logout());
+    navigate("/"); 
   };
 
   return (
@@ -91,7 +108,7 @@ const PBN_Dashboard = () => {
           <SuperAdminDashboard campaigns={campaigns} onDelete={handleDeleteCampaign} />
         )}
         {role === "admin" && <AdminDashboard campaigns={campaigns} />}
-        {role === "practice_user" && <UserDashboard campaigns={campaigns} />}
+        {role === "practice user" && <AllMessages />}
       </main>
     </div>
   );
