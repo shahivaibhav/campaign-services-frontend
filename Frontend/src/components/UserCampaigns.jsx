@@ -45,9 +45,12 @@ const UserCampaigns = () => {
             });
 
             if (response.ok) {
+                toast.success("Campaign created successfully!");
                 const jsonResponse = await response.json();
                 console.log("Created a new campaign", jsonResponse);
-                navigate('/dashboard');
+                setTimeout(() => {
+                    navigate("/dashboard");
+                }, 1000); 
             }
         } catch (error) {
             console.log("error message: ", error);
@@ -65,6 +68,7 @@ const UserCampaigns = () => {
 
     return (
         <div className="min-h-screen bg-gray-800 text-white flex items-center justify-center">
+            <ToastContainer/>
             <form onSubmit={submitHandler} className="bg-gray-700 p-6 rounded shadow-lg w-full max-w-md">
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Type</label>

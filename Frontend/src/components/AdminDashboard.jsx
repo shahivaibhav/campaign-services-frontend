@@ -11,7 +11,7 @@ const AdminDashboard = ({ campaigns }) => {
     const token = Cookies.get("access_token");
     if (!token) {
       toast.error("Access token not found");
-      return;
+      navigate('/auth')
     }
 
     try {
@@ -48,12 +48,20 @@ const AdminDashboard = ({ campaigns }) => {
       <ToastContainer />
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-200">Send Campaigns</h2>
-        <button
-          onClick={onSubmitHistory}
-          className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-        >
-          Sent Messages
-        </button>
+        <div className="space-x-4">
+          <button
+            onClick={() => navigate("/schedule-campaign")}
+            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+          >
+            Schedule Campaign
+          </button>
+          <button
+            onClick={onSubmitHistory}
+            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+          >
+            Sent Messages
+          </button>
+        </div>
       </div>
       <div className="bg-[#212121] shadow rounded-lg p-6">
         <div className="space-y-4">

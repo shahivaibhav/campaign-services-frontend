@@ -49,7 +49,9 @@ const UpdateCampaign = () => {
             const data = await response.json();
             console.log(data)
 
-            navigate('/dashboard');
+            setTimeout(() => {
+                navigate("/dashboard");
+            }, 2000); 
         } else {
             toast.error('Failed to update campaign.');
         }

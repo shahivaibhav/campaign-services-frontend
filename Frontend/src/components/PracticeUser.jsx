@@ -62,7 +62,9 @@ const AllReceivedMessages = () => {
 
       if (response.ok) {
         toast.success("Campaign accepted successfully!");
-        navigate("/"); // Redirect to home or another page
+        setTimeout(() => {
+          navigate("/");
+        }, 1000); 
       } else {
         toast.error("Failed to accept campaign");
       }
