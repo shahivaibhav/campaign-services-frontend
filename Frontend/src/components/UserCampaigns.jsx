@@ -14,13 +14,10 @@ const UserCampaigns = () => {
     const navigate = useNavigate();
 
     const superAdminUrl = "http://127.0.0.1:8000/user-campaigns/api/campaign-superadmin/";
-    const adminUrl = "http://127.0.0.1:8000/user-campaigns/api/campaign-admin/";
-
-    const role = "super_admin"
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        const url = role === "admin" ? adminUrl : superAdminUrl;
+        const url = superAdminUrl;
 
         try {
             const token = Cookies.get("access_token");
@@ -112,7 +109,6 @@ const UserCampaigns = () => {
                         className="w-full px-3 py-2 bg-gray-800 text-white border border-gray-600 rounded focus:outline-none focus:ring focus:ring-blue-500"
                     >
                         <option value="pending">Pending</option>
-                        <option value="active">Active</option>
                     </select>
                 </div>
                 <button

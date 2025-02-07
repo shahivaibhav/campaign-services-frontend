@@ -3,15 +3,25 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
 const ScheduleCampaign = () => {
   const navigate = useNavigate();
   const [scheduledDatetimes, setScheduledDatetimes] = useState({});
   const [campaigns, setCampaigns] = useState([]);
+  const [nextPage, setNextPage] = useState(null)
+  const [prevPage, setPrevPage] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const role = useSelector((state) => state.user.role);
+
+  const userUrl =
+        role === "super_admin"
+          ? "http://127.0.0.1:8000/user-campaigns/api/campaign-superadmin/"
+          : "http://127.0.0.1:8000/user-campaigns/api/campaign-admin/";
 
   // Fetch campaigns when the component mounts
-  useEffect(() => {
-    const fetchCampaigns = async () => {
+
+    const fetchCampaigns = async (page = 1) => {
       const token = Cookies.get("access_token");
       if (!token) {
         console.error("Access token not found");
@@ -19,7 +29,7 @@ const ScheduleCampaign = () => {
       }
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/user-campaigns/api/campaign-admin/",
+          `${userUrl}?page=${page}`,
           {
             method: "GET",
             headers: {
@@ -27,20 +37,26 @@ const ScheduleCampaign = () => {
             },
           }
         );
-
+  
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
-
+  
         const data = await response.json();
-        setCampaigns(data);
+        setCampaigns(data.results); 
+        setNextPage(data.next)
+        setPrevPage(data.previous)
+        setCurrentPage(page)
       } catch (err) {
         console.error(err);
       }
     };
 
-    fetchCampaigns();
-  }, []); // Runs once on mount
+    useEffect(() => {
+          fetchCampaigns();
+    }, []);
+
+  // Runs once on mount
 
   // Handle input change for scheduled datetime
   const handleDatetimeChange = (campaignId, datetime) => {
@@ -167,7 +183,7 @@ const ScheduleCampaign = () => {
                 <div className="flex justify-between items-center">
                   <div>
                     <h4 className="font-medium text-gray-300">
-                      {campaign.name}
+                      {campaign.type}
                     </h4>
                     <p className="text-gray-400">{campaign.description}</p>
                     <input
@@ -193,6 +209,24 @@ const ScheduleCampaign = () => {
           )}
         </div>
       </div>
+
+      <div className="flex justify-center space-x-10 mt-6">
+            <button
+              className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+              disabled={!prevPage}
+              onClick={() => fetchCampaigns(currentPage - 1)}
+            >
+              Previous
+            </button>
+            <span className="text-lg mt-1 font-semibold">Page {currentPage}</span>
+            <button
+              className="px-6 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+              disabled={!nextPage}
+              onClick={() => fetchCampaigns(currentPage + 1)}
+            >
+              Next
+            </button>
+          </div>
     </div>
   );
 };

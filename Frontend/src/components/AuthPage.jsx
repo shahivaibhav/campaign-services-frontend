@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux'
-import { loginSuccess } from '../redux/userSlice'
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../redux/userSlice';
 import Cookies from "js-cookie";
-
 
 const AuthPage = () => {
   const RegisterUserEnd = "http://127.0.0.1:8000/users/register/";
   const LoginUserEnd = "http://127.0.0.1:8000/users/login/";
-
 
   const [isSignUp, setIsSignUp] = useState(true);
   const [formdata, setFormData] = useState({
@@ -17,7 +15,7 @@ const AuthPage = () => {
     last_name: "",
     email: "",
     password: "",
-    roles: "practice user",
+    roles: "practice user", // default role
   });
 
   const navigate = useNavigate();  // Initialize the navigate function
@@ -58,7 +56,6 @@ const AuthPage = () => {
           // If it's a sign-up, redirect to the sign-in page after successful registration
           setIsSignUp(false);
         } else {
-          
           Cookies.set("access_token", jsonResponse.access, { expires: 1 });
           Cookies.set("refresh_token", jsonResponse.refresh, { expires: 7 });
           dispatch(
@@ -67,7 +64,7 @@ const AuthPage = () => {
               email: jsonResponse.email,
             })
           );
-          navigate('/dashboard')
+          navigate('/dashboard');
         }
       } else {
         console.error("Error:", response.statusText);
@@ -109,7 +106,6 @@ const AuthPage = () => {
                     onChange={handleChange}
                     className="mt-1 block w-full px-3 py-2 text-white bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
                     required
-                    
                   />
                 </div>
                 <div>
@@ -177,12 +173,12 @@ const AuthPage = () => {
                   className="mt-1 block w-full px-3 py-2 text-white bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150"
                   required
                 >
-                  <option value="practice_user">Practice User</option>
                   <option value="admin">Admin</option>
                   <option value="super_admin">Super Admin</option>
                 </select>
               </div>
             )}
+
           </div>
 
           <div>
@@ -230,18 +226,25 @@ const AuthPage = () => {
               {isSignUp ? "Sign in to your account" : "Create a new account"}
             </button>
           </div>
-          
-          {/* Forgot Password Link */}
-          {!isSignUp && (
-            <div className="mt-4 text-center">
-              <a
-                href="/auth/rest-password"
-                className="text-sm font-medium text-blue-600 hover:text-blue-500 transition duration-150"
-              >
-                Forgot your password?
-              </a>
-            </div>
-          )}
+        </div>
+
+        {/* Links for practice options */}
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-400">Choose an option:</p>
+          <div className="mt-2 flex justify-center space-x-4">
+            <a
+              href="/create-practice"
+              className="text-sm font-medium text-blue-600 hover:text-blue-500"
+            >
+              Create New Practice
+            </a>
+            <a
+              href="/extend-practice"
+              className="text-sm font-medium text-blue-600 hover:text-blue-500"
+            >
+              Associate to Existing Practice
+            </a>
+          </div>
         </div>
       </div>
     </div>

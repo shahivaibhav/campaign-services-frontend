@@ -20,6 +20,9 @@ import { PersistGate } from "redux-persist/lib/integration/react.js";
 import AllMessages from "./components/AllSentMessages.jsx";
 import ReceivedMessages from "./components/PracticeUser.jsx";
 import ScheduleCampaign from "./components/ScheduleCampaign.jsx";
+import CreateNewPractice from "./components/CreateNewPractice.jsx";
+import ExistingPracticeUser from "./components/ExtendPracticeUser.jsx";
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,6 +30,8 @@ const router = createBrowserRouter(
       <Route path="/" element={<App />} />
       <Route path="/auth" element={<AuthPage />} />
       <Route path="/auth/rest-password" element={<ResetPassword />} />
+      <Route path="/create-practice" element={<CreateNewPractice />} />
+      <Route path="/extend-practice" element={<ExistingPracticeUser />} />
       <Route
         path="/dashboard"
         element={
