@@ -89,7 +89,7 @@ const AllReceivedMessages = () => {
             if (messageId) {
               markMessageAsSeen(messageId);
             }
-          }
+          } 
         });
       },
       { threshold: 1.0 } // Fully visible
